@@ -4,6 +4,10 @@ Importado desde [`sulbase/weather-heart-interface`](https://github.com/sulbase/w
 
 Tenant: `redex` · Directus: `https://zyklo.sulbase.com`
 
+Cloudflare: `DIRECTUS_TOKEN` must be a **runtime secret**
+(`Workers → redex → Settings → Variables and Secrets`, Encrypted).
+Build variables are not available when placing orders.
+
 ```bash
 cd stores/REDEX
 npm install

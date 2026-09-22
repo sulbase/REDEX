@@ -73,14 +73,11 @@ const TENANT_SLUG = import.meta.env.VITE_TENANT_SLUG || "redex";
 
 const SKIP_ATTR_KEYS = new Set(["is_physical", "taxable", "tax_included"]);
 
+import { runtimeEnv } from "@/lib/runtime-env";
+
 /** Static token only on the server (SSR/loader). Never expose via VITE_*. */
 function serverDirectusToken(): string | undefined {
-  try {
-    const tok = process.env.DIRECTUS_TOKEN?.trim();
-    return tok || undefined;
-  } catch {
-    return undefined;
-  }
+  return runtimeEnv("DIRECTUS_TOKEN");
 }
 
 function buildUrl(path: string, params: Record<string, string>) {

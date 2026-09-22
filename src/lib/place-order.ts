@@ -9,6 +9,7 @@ import {
 import { priceBreaksFor, quoteLine } from "@/lib/pricing";
 import { splitTax } from "@/lib/tax";
 import { assertOrderGuard } from "@/lib/order-guard";
+import { runtimeEnv } from "@/lib/runtime-env";
 
 type OrderInput = {
   customer_name: string;
@@ -66,9 +67,14 @@ export const placeOrder = createServerFn({ method: "POST" })
       lineCount: data.lines.length,
     });
     try {
-    const token = process.env.DIRECTUS_TOKEN?.trim();
-    const base = (process.env.VITE_DIRECTUS_URL || "https://zyklo.sulbase.com").replace(/\/$/, "");
-    if (!token) throw new Error("No se pudo enviar el pedido");
+    const token = runtimeEnv("DIRECTUS_TOKEN");
+    const base = (
+      runtimeEnv("VITE_DIRECTUS_URL") || "https://zyklo.sulbase.com"
+    ).replace(/\/$/, "");
+    if (!token) {
+      console.error("DIRECTUS_TOKEN missing at Worker runtime");
+      throw new Error("No se pudo enviar el pedido");
+    }
 
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -79,7 +85,10 @@ export const placeOrder = createServerFn({ method: "POST" })
       `${base}/items/tenants?filter[slug][_eq]=redex&fields=id&limit=1`,
       { headers },
     );
-    if (!tenantRes.ok) throw new Error("No se pudo enviar el pedido");
+    if (!tenantRes.ok) {
+      console.error("Directus tenants lookup failed", tenantRes.status);
+      throw new Error("No se pudo enviar el pedido");
+    }
     const tenantJson = (await tenantRes.json()) as { data?: Array<{ id: string }> };
     const tenantId = tenantJson.data?.[0]?.id;
     if (!tenantId) throw new Error("No se pudo enviar el pedido");
@@ -155,7 +164,11 @@ export const placeOrder = createServerFn({ method: "POST" })
         items,
       }),
     });
-    if (!created.ok) throw new Error("No se pudo enviar el pedido");
+    if (!created.ok) {
+      const detail = await created.text().catch(() => "");
+      console.error("Directus orders POST failed", created.status, detail.slice(0, 400));
+      throw new Error("No se pudo enviar el pedido");
+    }
     const body = (await created.json()) as { data?: { id?: string } };
     guard.commit();
     return { id: body.data?.id || "" };
