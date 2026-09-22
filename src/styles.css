@@ -1,0 +1,129 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-dark: var(--primary-dark);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root {
+  --radius: 0.5rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.22 0.005 285);
+  --card: oklch(0.98 0.002 285);
+  --card-foreground: oklch(0.22 0.005 285);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.005 285);
+  --primary: oklch(0.5 0.196 20.5);
+  --primary-foreground: oklch(1 0 0);
+  --primary-dark: oklch(0.4 0.16 19);
+  --secondary: oklch(0.96 0.003 285);
+  --secondary-foreground: oklch(0.22 0.005 285);
+  --muted: oklch(0.955 0.002 285);
+  --muted-foreground: oklch(0.5 0.008 285);
+  --accent: oklch(0.94 0.004 285);
+  --accent-foreground: oklch(0.22 0.005 285);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.9 0.003 285);
+  --input: oklch(0.9 0.003 285);
+  --ring: oklch(0.5 0.196 20.5);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.015em;
+  }
+}
+
+@utility eyebrow {
+  font-size: 0.8125rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(2.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility hero-rise {
+  animation: hero-rise 1.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@utility hero-rise-delay {
+  animation-delay: 0.14s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise {
+    animation: none;
+  }
+}
+
+@keyframes wa-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgb(37 211 102 / 0.55);
+  }
+  70% {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 14px rgb(37 211 102 / 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgb(37 211 102 / 0);
+  }
+}
+
+@utility wa-pulse {
+  animation: wa-pulse 1.6s ease-out infinite;
+}
